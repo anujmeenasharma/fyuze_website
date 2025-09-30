@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
+import Image from 'next/image';
 
 const ANIMATION_CONFIG = {
   SMOOTH_TAU: 0.25,
@@ -233,7 +234,7 @@ export const LogoLoop = memo(
             {item.node}
           </span>
         ) : (
-          <img
+          <Image
             className={cx(
               'h-[var(--logoloop-logoHeight)] w-auto block object-contain',
               '[-webkit-user-drag:none] pointer-events-none',
@@ -243,15 +244,13 @@ export const LogoLoop = memo(
                 'transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover/item:scale-120'
             )}
             src={item.src}
-            srcSet={item.srcSet}
-            sizes={item.sizes}
-            width={item.width}
-            height={item.height}
+            width={item.width || 100}
+            height={item.height || 40}
             alt={item.alt ?? ''}
             title={item.title}
             loading="lazy"
-            decoding="async"
             draggable={false}
+            sizes={item.sizes}
           />
         );
 

@@ -107,8 +107,8 @@ const FeaturesComponent = () => {
                 </p>
                 <div>
                     <h1 ref={addToRefs} className="relative text-6xl font-bold font-archivo w-[620px] text-[#aaa] h-[45px] mb-4">
-                        <span className="absolute whitespace-nowrap top-0 w-full overflow-hidden left-0">Fyuze	is	the	world's</span>
-                        <span className="absolute whitespace-nowrap top-0 text-black w-[37%] overflow-hidden left-0">Fyuze	is	the	world's</span>
+                        <span className="absolute whitespace-nowrap top-0 w-full overflow-hidden left-0">Fyuze	is	the	world&apos;s</span>
+                        <span className="absolute whitespace-nowrap top-0 text-black w-[37%] overflow-hidden left-0">Fyuze	is	the	world&apos;s</span>
                     </h1>
                     <h1 ref={addToRefs} className="relative text-6xl font-bold font-archivo w-[620px] text-[#aaa] h-[45px] mb-4">
                         <span className="absolute whitespace-nowrap top-0 w-full overflow-hidden left-0">first	truly	AI-powered</span>

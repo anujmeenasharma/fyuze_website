@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useId } from "react";
+import { useEffect, useRef, useState, useId, useCallback } from "react";
 
 const useDarkMode = () => {
   const [isDark, setIsDark] = useState(false);
@@ -53,7 +53,7 @@ const GlassSurface = ({
 
   const isDarkMode = useDarkMode();
 
-  const generateDisplacementMap = () => {
+  const generateDisplacementMap = useCallback(() => {
     const rect = containerRef.current?.getBoundingClientRect();
     const actualWidth = rect?.width || 400;
     const actualHeight = rect?.height || 200;
@@ -81,11 +81,11 @@ const GlassSurface = ({
     `;
 
     return `data:image/svg+xml,${encodeURIComponent(svgContent)}`;
-  };
+  }, [borderRadius, borderWidth, brightness, opacity, blur, mixBlendMode, redGradId, blueGradId]);
 
-  const updateDisplacementMap = () => {
+  const updateDisplacementMap = useCallback(() => {
     feImageRef.current?.setAttribute("href", generateDisplacementMap());
-  };
+  }, [generateDisplacementMap]);
 
   useEffect(() => {
     updateDisplacementMap();
@@ -103,6 +103,7 @@ const GlassSurface = ({
 
     gaussianBlurRef.current?.setAttribute("stdDeviation", displace.toString());
   }, [
+    updateDisplacementMap,
     width,
     height,
     borderRadius,
@@ -129,11 +130,11 @@ const GlassSurface = ({
 
     resizeObserver.observe(containerRef.current);
     return () => resizeObserver.disconnect();
-  }, []);
+  }, [updateDisplacementMap]);
 
   useEffect(() => {
     setTimeout(updateDisplacementMap, 0);
-  }, [width, height]);
+  }, [updateDisplacementMap, width, height]);
 
   const supportsSVGFilters = () => {
     if (typeof window === "undefined") return false;
