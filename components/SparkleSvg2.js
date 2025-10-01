@@ -20,7 +20,7 @@ export default function SparkleSvg2({ restart = false }) {
         {
           scale: s,
           duration: 0.4,
-          ease: "power1.out",
+          ease: "power1.inOut",
           stagger: 0.15,
         },
         i * 0.2
@@ -32,7 +32,7 @@ export default function SparkleSvg2({ restart = false }) {
       {
         scale: 1,
         duration: 0.3,
-        ease: "power1.in",
+        ease: "power1.inOut",
         stagger: 0.15,
       },
       "+=0"

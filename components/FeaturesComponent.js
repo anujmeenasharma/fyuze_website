@@ -32,7 +32,7 @@ const FeaturesComponent = () => {
             
             opacity: 1,
             duration: 0.8,
-            ease: "power2.out",
+            ease: "power2.inOut",
             scrollTrigger: {
                 trigger: paragraphRef.current,
                 start: "top 80%",
@@ -46,7 +46,7 @@ const FeaturesComponent = () => {
                 opacity: 1,
                 duration: 0.8,
                 delay: index * 0.01,
-                ease: "power2.out",
+                ease: "power2.inOut",
                 scrollTrigger: {
                     trigger: h1,
                     start: "top 80%",

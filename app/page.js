@@ -57,10 +57,10 @@ export default function Home() {
     <>
       {/* <SplashCursor /> */}
       <div className="relative w-full z-50">
-        <div className="section" data-text="light">
+        <div className="section bg-beige-800" data-text="light">
           <HeroComponent />
         </div>
-        <div className="section h-[600vh]" data-text="dark">
+        <div className="section h-[800vh] bg-beige-800" data-text="dark">
           <AboutComponent />
         </div>
         <div className="section bg-[#E2E1DC] h-[200vh]" data-text="light">
@@ -79,10 +79,10 @@ export default function Home() {
             ariaLabel="Technology partners"
           />
         </div>
-        {/* <div className="section" data-text="dark">
+        <div className="section" data-text="dark">
           <SocialPlatformsComponent />
         </div>
-        <div className="section" data-text="light">
+        {/* <div className="section" data-text="light">
           <FAQsection />
         </div> */}
       </div>

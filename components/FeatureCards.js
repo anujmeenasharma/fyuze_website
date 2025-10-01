@@ -22,7 +22,7 @@ const FeatureCards = () => {
         opacity: 1,
         duration: 0.8,
         delay: index * 0.2,
-        ease: "power2.out",
+        ease: "power2.inOut",
         scrollTrigger: {
           trigger: card,
           start: "top 80%",

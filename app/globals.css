@@ -141,6 +141,10 @@ body {
   }
 }
 
+::-webkit-scrollbar{
+  display: none;
+}
+
 .gradient-1 {
   background: linear-gradient(
     315.59deg,
@@ -470,3 +474,10 @@ body {
 .cards-gradient:hover h1, .cards-gradient:hover p {
   color: #000000;
 }
+
+
+
+
+
+
+
