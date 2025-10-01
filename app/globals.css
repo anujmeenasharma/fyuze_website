@@ -475,6 +475,37 @@ body {
   color: #000000;
 }
 
+/* Infinite Scroll Animations */
+@keyframes scrollUp {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes scrollDown {
+  0% {
+    transform: translateY(-50%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-scroll-up-slow {
+  animation: scrollUp 20s linear infinite;
+}
+
+.animate-scroll-up-fast {
+  animation: scrollUp 15s linear infinite;
+}
+
+.animate-scroll-down-medium {
+  animation: scrollDown 18s linear infinite;
+}
+
 
 
 

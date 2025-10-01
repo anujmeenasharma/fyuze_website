@@ -45,9 +45,9 @@ const FeatureCards = () => {
   return (
     <div className='h-[44vh] w-[80%] mx-auto flex justify-between'>
       <div ref={addToRefs} className='relative group'>
-        <div className='h-60 w-72 bg-[#FF6B3A] absolute -top-8 -left-8 blur-[7vw] z-0 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100'>
+        <div className='h-80 w-96 bg-[#FF6B3A] absolute -top-8 -left-8 blur-[7vw] z-0 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100'>
         </div>
-        <div className='h-64 w-96 rounded-4xl cards-gradient p-5 flex flex-col gap-8 relative z-10'>
+        <div className='h-[20vw] w-[25vw] rounded-4xl cards-gradient p-5 flex flex-col gap-8 relative z-10'>
           <div className='relative z-10'>
             <Image src="/sealCheck.svg" alt="feature-card-1" width={35} height={35} />
             <h1 className='text-white pt-6 text-3xl font-bold'>
@@ -62,7 +62,7 @@ const FeatureCards = () => {
       <div ref={addToRefs} className='relative group'>
         <div className='h-80 w-96 bg-[#FF6B3A] absolute -top-8 -left-8 blur-[7vw] z-0 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100'>
         </div>
-        <div className='h-64 w-96 rounded-4xl cards-gradient p-5 flex flex-col gap-8 relative z-10'>
+        <div className='h-[20vw] w-[25vw] rounded-4xl cards-gradient p-5 flex flex-col gap-8 relative z-10'>
           <div className='relative z-10'>
             <Image src="/userFocus.svg" alt="feature-card-1" width={35} height={35} />
             <h1 className='text-white text-3xl font-bold pt-6'>
@@ -77,7 +77,7 @@ const FeatureCards = () => {
       <div ref={addToRefs} className='relative group'>
         <div className='h-80 w-96 bg-[#FF6B3A] absolute -top-8 -left-8 blur-[7vw] z-0 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100'>
         </div>
-        <div className='h-64 w-96 rounded-4xl cards-gradient p-5 flex flex-col gap-8 relative z-10'>
+        <div className='h-[20vw] w-[25vw] rounded-4xl cards-gradient p-5 flex flex-col gap-8 relative z-10'>
           <div className='relative z-10'>
             <Image src="/crossHair.svg" alt="feature-card-1" width={35} height={35} />
             <h1 className='text-white text-3xl font-bold pt-6 w-[80%]'>

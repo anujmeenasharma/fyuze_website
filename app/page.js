@@ -63,21 +63,23 @@ export default function Home() {
         <div className="section h-[800vh] bg-beige-800" data-text="dark">
           <AboutComponent />
         </div>
-        <div className="section bg-[#E2E1DC] h-[200vh]" data-text="light">
+        <div className="section bg-[#E2E1DC] h-[220vh]" data-text="light">
           <FeaturesComponent />
           <FeatureCards />
-          <LogoLoop
-            logos={imageLogos}
-            speed={120}
-            direction="left"
-            logoHeight={28}
-            gap={40}
-            pauseOnHover
-            scaleOnHover
-            fadeOut
-            fadeOutColor="#ffffff"
-            ariaLabel="Technology partners"
-          />
+          <div className="h-[40vh] flex-center">
+            <LogoLoop
+              logos={imageLogos}
+              speed={120}
+              direction="left"
+              logoHeight={28}
+              gap={40}
+              pauseOnHover
+              scaleOnHover
+              fadeOut
+              fadeOutColor="#ffffff"
+              ariaLabel="Technology partners"
+            />
+          </div>
         </div>
         <div className="section" data-text="dark">
           <SocialPlatformsComponent />

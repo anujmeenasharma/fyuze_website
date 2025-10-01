@@ -15,10 +15,26 @@ export default function AboutComponent() {
   const cursorRef = useRef(null);
   const step3Reached = useRef(false);
   const [restartSparkle, setRestartSparkle] = useState(false);
+  const textMeasureRef = useRef(null);
 
   const handlePlayAnimation = () => {
     setRestartSparkle(true);
     setTimeout(() => setRestartSparkle(false), 100);
+  };
+
+  // Function to calculate cursor position based on text width
+  const updateCursorPosition = (text) => {
+    if (!textMeasureRef.current || !cursorRef.current || !inputRef.current) return;
+    
+    // Use the measurement element to calculate text width
+    textMeasureRef.current.textContent = text;
+    const textWidth = textMeasureRef.current.offsetWidth;
+    
+    // Update cursor position smoothly
+    gsap.set(cursorRef.current, {
+      left: textWidth + 'px',
+      willChange: "transform"
+    });
   };
 
   // Mouse move effect
@@ -243,9 +259,23 @@ export default function AboutComponent() {
       scrollTrigger: {
         trigger: aboutCont.current,
         start: "top top",
-        end: "+=700%", // increased scroll distance for longer animation
-        scrub: 4,     // increased scrub for slower scroll-based animation
+        end: "+=800%", // increased scroll distance for exit animation
+        scrub: 2,     // reduced scrub for smoother bidirectional scrolling
         pin: true,
+        anticipatePin: 1,
+        refreshPriority: -1,
+        onUpdate: (self) => {
+          // Handle cursor visibility during scroll
+          if (cursorRef.current) {
+            const progress = self.progress;
+            // Show cursor only during the first typewriter section (step 2)
+            const showCursor = progress > 0.1 && progress < 0.4;
+            gsap.set(cursorRef.current, {
+              display: showCursor ? 'block' : 'none',
+              opacity: showCursor ? 1 : 0
+            });
+          }
+        }
       },
     });
 
@@ -263,10 +293,9 @@ export default function AboutComponent() {
         },
         onUpdate: () => {
           if (inputRef.current) {
-            inputRef.current.placeholder = text.slice(
-              0,
-              Math.floor(chars.value)
-            );
+            const currentText = text.slice(0, Math.floor(chars.value));
+            inputRef.current.placeholder = currentText;
+            updateCursorPosition(currentText);
           }
         },
         willChange: "opacity",
@@ -506,33 +535,20 @@ export default function AboutComponent() {
       .to(
         chars,
         {
-          value: 0, // reset
+          value: text.length, // keep the text filled instead of resetting
           duration: 0,
-          delay: 2, // increased from 1.5
-          onUpdate: () => {
-            if (inputRef.current) inputRef.current.placeholder = "";
-          },
-          willChange: "opacity",
-        },
-        "step3"
-      )
-      .to(
-        chars,
-        {
-          value: text.length,
-          duration: 1.5, // increased from 0.8
-          delay: 2, // increased from 1.5
-          ease: "none",
-          onStart: () => {
-            // Trigger sparkle again when typewriter runs on step 3
-            handlePlayAnimation();
-          },
+          delay: 1.5,
           onUpdate: () => {
             if (inputRef.current) {
-              inputRef.current.placeholder = text.slice(
-                0,
-                Math.floor(chars.value)
-              );
+              // Keep the full text visible
+              inputRef.current.placeholder = text;
+              updateCursorPosition(text);
+            }
+          },
+          onComplete: () => {
+            // Hide cursor after text is complete
+            if (cursorRef.current) {
+              gsap.set(cursorRef.current, { opacity: 0 });
             }
           },
           willChange: "opacity",
@@ -744,7 +760,149 @@ export default function AboutComponent() {
           willChange: "opacity, transform",
         },
         "step4+=0.3" // increased from 0.2
+      );
+
+    // Step 5: Exit Animation - All elements move out from screen
+    tl.to(
+        ".img6",
+        {
+          y: "-100vh",
+          opacity: 0,
+          duration: 1.5,
+          ease: "power2.inOut",
+          willChange: "opacity, transform",
+        },
+        "step5"
       )
+      .to(
+        ".anim4-heading",
+        {
+          y: "-100vh",
+          opacity: 0,
+          duration: 1.5,
+          ease: "power2.inOut",
+          willChange: "opacity, transform",
+        },
+        "step5+=0.2"
+      )
+      .to(
+        ".anim4-desc",
+        {
+          y: "-100vh",
+          opacity: 0,
+          duration: 1.5,
+          ease: "power2.inOut",
+          willChange: "opacity, transform",
+        },
+        "step5+=0.4"
+      )
+      .to(
+        [".chat-logo", ".chat-bubble"],
+        {
+          y: "-100vh",
+          opacity: 0,
+          duration: 1.5,
+          ease: "power2.inOut",
+          willChange: "opacity, transform",
+        },
+        "step5+=0.6"
+      )
+      .to(
+        ".popup.four",
+        {
+          y: "-100vh",
+          opacity: 0,
+          duration: 1.5,
+          ease: "power2.inOut",
+          willChange: "opacity, transform",
+        },
+        "step5+=0.8"
+      )
+      // Images exit in opposite directions from their entry
+      .to(
+        ".img1",
+        {
+          left: "-25vw",
+          top: "-15vh",
+          opacity: 0,
+          duration: 1.8,
+          ease: "power2.inOut",
+          willChange: "opacity, transform",
+        },
+        "step5"
+      )
+      .to(
+        ".img2",
+        {
+          left: "-15vw",
+          bottom: "-15vh",
+          opacity: 0,
+          duration: 1.8,
+          ease: "power2.inOut",
+          willChange: "opacity, transform",
+        },
+        "step5"
+      )
+      .to(
+        ".img3",
+        {
+          bottom: "-60vh",
+          left: "-20vw",
+          opacity: 0,
+          duration: 1.8,
+          ease: "power2.inOut",
+          willChange: "opacity, transform",
+        },
+        "step5"
+      )
+      .to(
+        ".img4",
+        {
+          right: "-15vw",
+          bottom: "-25vh",
+          opacity: 0,
+          duration: 1.8,
+          ease: "power2.inOut",
+          willChange: "opacity, transform",
+        },
+        "step5"
+      )
+      .to(
+        ".img5",
+        {
+          right: "-20vw",
+          bottom: "-20vh",
+          opacity: 0,
+          duration: 1.8,
+          ease: "power2.inOut",
+          willChange: "opacity, transform",
+        },
+        "step5"
+      )
+      .to(
+        ".img7",
+        {
+          right: "-30vw",
+          top: "-20vh",
+          opacity: 0,
+          duration: 1.8,
+          ease: "power2.inOut",
+          willChange: "opacity, transform",
+        },
+        "step5"
+      )
+      .to(
+        ".img8",
+        {
+          left: "-15vw",
+          top: "-12vh",
+          opacity: 0,
+          duration: 1.8,
+          ease: "power2.inOut",
+          willChange: "opacity, transform",
+        },
+        "step5"
+      );
 
       
   }, []);
@@ -752,18 +910,28 @@ export default function AboutComponent() {
   useEffect(() => {
     if (!cursorRef.current) return;
 
-    gsap.to(cursorRef.current, {
+    // Create a more stable cursor animation
+    const cursorTl = gsap.timeline({ repeat: -1 });
+    cursorTl.to(cursorRef.current, {
       opacity: 0,
       duration: 0.6,
-      repeat: -1,
-      yoyo: true,
+      ease: "power1.inOut",
+      willChange: "opacity",
+    })
+    .to(cursorRef.current, {
+      opacity: 1,
+      duration: 0.6,
       ease: "power1.inOut",
       willChange: "opacity",
     });
+
+    return () => {
+      cursorTl.kill();
+    };
   }, []);
 
   return (
-    <div className="w-full h-[300vh] bg-transparent">
+    <div className="w-full h-[400vh] bg-transparent">
       <div
         className="bg-beige-800 w-full h-screen sticky top-0 overflow-hidden flex-center text-dark-black"
         ref={aboutCont}
@@ -792,6 +960,11 @@ export default function AboutComponent() {
                 className="w-full relative bg-transparent border-none outline-none"
               />
               <span
+                ref={textMeasureRef}
+                className="absolute top-0 left-0 opacity-0 pointer-events-none whitespace-nowrap"
+                style={{ fontSize: 'inherit', fontFamily: 'inherit', fontWeight: 'inherit' }}
+              ></span>
+              <span
                 ref={cursorRef}
                 className="absolute top-0 left-0 w-[1px] h-full bg-black"
               ></span>
@@ -802,18 +975,6 @@ export default function AboutComponent() {
             on your niche, audience, and campaign goals so you save time, money,
             and effort.
           </p>
-        </div>
-        <div className="flex-between w-11/12 mx-auto absolute z-20 bottom-8">
-          <div className="rounded-full px-8 py-[10px] text-xs leading-[100%] left-10 border-gray-500 border font-medium text-gray-500 cursor-pointer">
-            FIND YOUR NEXT INFLUENCER
-          </div>
-          <div className="flex-center flex-col gap-1">
-            <div className="w-[0.5px] h-[20px] relative bg-gray-500 line1"></div>
-            <p className="text-xs text-center font-medium font-archivo leading-[100%] uppercase text text-gray-500">
-              Scroll to explore
-            </p>
-            <div className="w-[0.5px] h-[5px] relative bg-gray-500 line2"></div>
-          </div>
         </div>
         {/* Floating Images */}
         <div className="w-full h-full absolute z-20 top-0 left-0">
