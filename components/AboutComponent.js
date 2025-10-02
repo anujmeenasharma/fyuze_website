@@ -17,921 +17,925 @@ export default function AboutComponent() {
   const [restartSparkle, setRestartSparkle] = useState(false);
   const textMeasureRef = useRef(null);
 
+  const scopeRef = useRef(null);
+
   const handlePlayAnimation = () => {
     setRestartSparkle(true);
     setTimeout(() => setRestartSparkle(false), 100);
   };
 
-  // Function to calculate cursor position based on text width
   const updateCursorPosition = (text) => {
     if (!textMeasureRef.current || !cursorRef.current || !inputRef.current) return;
-    
-    // Use the measurement element to calculate text width
     textMeasureRef.current.textContent = text;
     const textWidth = textMeasureRef.current.offsetWidth;
-    
-    // Update cursor position smoothly
     gsap.set(cursorRef.current, {
       left: textWidth + 'px',
       willChange: "transform"
     });
   };
 
-  // Mouse move effect
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (!aboutCont.current) return;
-      const dims = aboutCont.current.getBoundingClientRect();
-      const xNorm = gsap.utils.clamp(
-        -1,
-        1,
-        ((e.clientX - dims.left) / dims.width) * 2 - 1
-      );
-      const yNorm = gsap.utils.clamp(
-        -1,
-        1,
-        ((e.clientY - dims.top) / dims.height) * 2 - 1
-      );
+    if (!scopeRef.current) return;
+    const ctx = gsap.context(() => {
+      const handleMouseMove = (e) => {
+        if (!aboutCont.current) return;
+        const dims = aboutCont.current.getBoundingClientRect();
+        const xNorm = gsap.utils.clamp(
+          -1,
+          1,
+          ((e.clientX - dims.left) / dims.width) * 2 - 1
+        );
+        const yNorm = gsap.utils.clamp(
+          -1,
+          1,
+          ((e.clientY - dims.top) / dims.height) * 2 - 1
+        );
 
-      const moveAmount = 40;
-      const moveAmountY = 30;
-      const imgConfigs = [
-        { selector: ".img1", factor: 1.5 },
-        { selector: ".img2", factor: 1 },
-        { selector: ".img3", factor: 0.6 },
-        { selector: ".img4", factor: 0.2 },
-        { selector: ".img5", factor: -0.8 },
-        { selector: ".img6", factor: -1.2, disableOnStep3: true },
-        { selector: ".img7", factor: -1.7 },
-        { selector: ".img8", factor: 0.5 },
-      ];
+        const moveAmount = 40;
+        const moveAmountY = 30;
+        const imgConfigs = [
+          { selector: ".img1", factor: 1.5 },
+          { selector: ".img2", factor: 1 },
+          { selector: ".img3", factor: 0.6 },
+          { selector: ".img4", factor: 0.2 },
+          { selector: ".img5", factor: -0.8 },
+          { selector: ".img6", factor: -1.2, disableOnStep3: true },
+          { selector: ".img7", factor: -1.7 },
+          { selector: ".img8", factor: 0.5 },
+        ];
 
-      imgConfigs.forEach(({ selector, factor, disableOnStep3 }) => {
-        if (disableOnStep3 && step3Reached.current) return; // skip img6 after step3
-        gsap.to(selector, {
-          x: xNorm * moveAmount * factor,
-          y: yNorm * moveAmountY * factor,
-          duration: 2,
-          ease: "power2.inOut",
-          willChange: "transform",
+        imgConfigs.forEach(({ selector, factor, disableOnStep3 }) => {
+          if (disableOnStep3 && step3Reached.current) return;
+          gsap.to(selector, {
+            x: xNorm * moveAmount * factor,
+            y: yNorm * moveAmountY * factor,
+            duration: 2,
+            ease: "power2.inOut",
+            willChange: "transform",
+          });
         });
+      };
+
+      window.addEventListener("mousemove", handleMouseMove);
+      return () => window.removeEventListener("mousemove", handleMouseMove);
+    }, scopeRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    if (!scopeRef.current) return;
+    const ctx = gsap.context(() => {
+      const loadTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: aboutCont.current,
+          start: "top top",
+          end: "bottom bottom",
+          toggleActions: "play none none reverse",
+          scrub: false,
+        },
       });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  useEffect(() => {
-    const loadTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: aboutCont.current,
-        start: "top top",
-        end: "bottom bottom",
-        toggleActions: "play none none reverse",
-        scrub: false,
-      },
-    });
-    loadTl
-      .from(
-        [
-          ".img1",
-          ".img2",
-          ".img3",
-          ".img4",
-          ".img5",
-          ".img6",
-          ".img7",
-          ".img8",
-        ],
-        {
-          opacity: 0,
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "opacity",
-        },
-        "q"
-      )
-      .from(
-        ".img1",
-        {
-          left: "-15vw",
-          top: "-5vh",
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "transform",
-        },
-        "q"
-      )
-      .from(
-        ".img2",
-        {
-          left: "-5vw",
-          bottom: "-5vh",
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "transform",
-        },
-        "q"
-      )
-      .from(
-        ".img3",
-        {
-          bottom: "-50vh",
-          left: "-10vw",
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "transform",
-        },
-        "q"
-      )
-      .from(
-        ".img4",
-        {
-          right: "-5vw",
-          bottom: "-5vh",
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "transform",
-        },
-        "q"
-      )
-      .from(
-        ".img5",
-        {
-          right: "-10vw",
-          bottom: "-10vh",
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "transform",
-        },
-        "q"
-      )
-      .from(
-        ".img6",
-        {
-          right: "-10vw",
-          top: "-5vh",
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "transform",
-        },
-        "q"
-      )
-      .from(
-        ".img7",
-        {
-          right: "-20vw",
-          top: "-10vh",
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "transform",
-        },
-        "q"
-      )
-      .from(
-        ".img8",
-        {
-          left: "-5vw",
-          top: "-2vh",
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "transform",
-        },
-        "q"
-      )
-      .fromTo(
-        ".content-text",
-        { opacity: 0, y: 80, willChange: "opacity, transform" },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.3,
-          duration: 1,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "q"
-      );
-  }, []);
-
-  useEffect(() => {
-    const text = "Travel influencers in Lebanon";
-
-    const heading = new SplitType(aboutCont.current.querySelector("h3"), {
-      types: "words",
-    });
-    const heading2 = new SplitType(aboutCont.current.querySelector("h4"), {
-      types: "words",
-    });
-    gsap.set(heading.words, {
-      opacity: 0,
-      y: 30, // slightly down so it can animate up
-      willChange: "opacity, transform",
-    });
-    gsap.set("anim3-desc .desc", {
-      opacity: 0,
-      y: 40, // slightly down so it can animate up
-      willChange: "opacity, transform",
-    });
-    gsap.set(heading2.words, {
-      opacity: 0,
-      y: 10, // slightly down so it can animate up
-      willChange: "opacity, transform",
-    });
-    gsap.set(".anim4-desc .desc", {
-      opacity: 0,
-      y: 20, // slightly down so it can animate up
-      willChange: "opacity, transform",
-    });
-    gsap.set(".popup", {
-      opacity: 0,
-      y: 5, // slightly down so it can animate up
-      willChange: "opacity, transform",
-    });
-    gsap.set(".gradient", {
-      opacity: 0,
-      y: 30, // slightly down so it can animate up
-      willChange: "opacity, transform",
-    });
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: aboutCont.current,
-        start: "top top",
-        end: "+=800%", // increased scroll distance for exit animation
-        scrub: 2,     // reduced scrub for smoother bidirectional scrolling
-        pin: true,
-        anticipatePin: 1,
-        refreshPriority: -1,
-        onUpdate: (self) => {
-          // Handle cursor visibility during scroll
-          if (cursorRef.current) {
-            const progress = self.progress;
-            // Show cursor only during the first typewriter section (step 2)
-            const showCursor = progress > 0.1 && progress < 0.4;
-            gsap.set(cursorRef.current, {
-              display: showCursor ? 'block' : 'none',
-              opacity: showCursor ? 1 : 0
-            });
-          }
-        }
-      },
-    });
-
-    // Step 2: Typewriter effect
-    const chars = { value: 0 };
-    tl.to(
-      chars,
-      {
-        value: text.length,
-        duration: 3.5, // increased from 2
-        delay: 1.5,    // increased from 1
-        ease: "none",
-        onStart: () => {
-          handlePlayAnimation();
-        },
-        onUpdate: () => {
-          if (inputRef.current) {
-            const currentText = text.slice(0, Math.floor(chars.value));
-            inputRef.current.placeholder = currentText;
-            updateCursorPosition(currentText);
-          }
-        },
-        willChange: "opacity",
-      },
-      "step2"
-    );
-
-    // Step 3: Return images to original positions
-    tl.to(
-      ".img1",
-      {
-        left: "-20vw",
-        top: "-5vh",
-        opacity: 1,
-        delay: 1.5,      // increased from 1
-        duration: 1.8,   // increased from 1
-        ease: "power2.inOut",
-        willChange: "opacity, transform",
-      },
-      "step3"
-    )
-      .to(
-        ".img2",
-        {
-          left: "-5vw",
-          bottom: "-5vh",
-          opacity: 1,
-          delay: 1.5,
-          duration: 1.8,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step3"
-      )
-      .to(
-        ".img3",
-        {
-          bottom: "-50vh",
-          left: "-10vw",
-          opacity: 1,
-          delay: 1.5,
-          duration: 1.8,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step3"
-      )
-      .to(
-        ".img4",
-        {
-          right: "-8vw",
-          bottom: "-15vh",
-          opacity: 1,
-          delay: 1.5,
-          duration: 1.8,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step3"
-      )
-      .to(
-        ".img5",
-        {
-          right: "-15vw",
-          bottom: "-10vh",
-          opacity: 1,
-          delay: 1.5,
-          duration: 1.8,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step3"
-      )
-      .to(
-        ".img6",
-        {
-          x: () =>
-            window.innerWidth / 2 -
-            document.querySelector(".img6").getBoundingClientRect().left -
-            document.querySelector(".img6").offsetWidth / 2,
-          y: () =>
-            window.innerHeight / 2 -
-            document.querySelector(".img6").getBoundingClientRect().top -
-            document.querySelector(".img6").offsetHeight / 2 +
-            40,
-          scale: 2.8,
-          opacity: 1,
-          delay: 1.5,
-          duration: 2, // increased from 1.2
-          ease: "power2.inOut",
-          onStart: () => {
-            step3Reached.current = true;
+      loadTl
+        .from(
+          [
+            ".img1",
+            ".img2",
+            ".img3",
+            ".img4",
+            ".img5",
+            ".img6",
+            ".img7",
+            ".img8",
+          ],
+          {
+            opacity: 0,
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "opacity",
           },
-          borderBottom: 1,
-          borderBottomColor: "#ffffff",
-          willChange: "opacity, transform",
+          "q"
+        )
+        .from(
+          ".img1",
+          {
+            left: "-15vw",
+            top: "-5vh",
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "transform",
+          },
+          "q"
+        )
+        .from(
+          ".img2",
+          {
+            left: "-5vw",
+            bottom: "-5vh",
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "transform",
+          },
+          "q"
+        )
+        .from(
+          ".img3",
+          {
+            bottom: "-50vh",
+            left: "-10vw",
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "transform",
+          },
+          "q"
+        )
+        .from(
+          ".img4",
+          {
+            right: "-5vw",
+            bottom: "-5vh",
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "transform",
+          },
+          "q"
+        )
+        .from(
+          ".img5",
+          {
+            right: "-10vw",
+            bottom: "-10vh",
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "transform",
+          },
+          "q"
+        )
+        .from(
+          ".img6",
+          {
+            right: "-10vw",
+            top: "-5vh",
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "transform",
+          },
+          "q"
+        )
+        .from(
+          ".img7",
+          {
+            right: "-20vw",
+            top: "-10vh",
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "transform",
+          },
+          "q"
+        )
+        .from(
+          ".img8",
+          {
+            left: "-5vw",
+            top: "-2vh",
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "transform",
+          },
+          "q"
+        )
+        .fromTo(
+          ".content-text",
+          { opacity: 0, y: 80, willChange: "opacity, transform" },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.3,
+            duration: 1,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "q"
+        );
+    }, scopeRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    if (!scopeRef.current) return;
+    const ctx = gsap.context(() => {
+      const text = "Travel influencers in Lebanon";
+
+      const heading = new SplitType(aboutCont.current.querySelector("h3"), {
+        types: "words",
+      });
+      const heading2 = new SplitType(aboutCont.current.querySelector("h4"), {
+        types: "words",
+      });
+      gsap.set(heading.words, {
+        opacity: 0,
+        y: 30,
+        willChange: "opacity, transform",
+      });
+      gsap.set("anim3-desc .desc", {
+        opacity: 0,
+        y: 40,
+        willChange: "opacity, transform",
+      });
+      gsap.set(heading2.words, {
+        opacity: 0,
+        y: 10,
+        willChange: "opacity, transform",
+      });
+      gsap.set(".anim4-desc .desc", {
+        opacity: 0,
+        y: 20,
+        willChange: "opacity, transform",
+      });
+      gsap.set(".popup", {
+        opacity: 0,
+        y: 5,
+        willChange: "opacity, transform",
+      });
+      gsap.set(".gradient", {
+        opacity: 0,
+        y: 30,
+        willChange: "opacity, transform",
+      });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: aboutCont.current,
+          start: "top top",
+          end: "+=800%",
+          scrub: 2,
+          pin: true,
+          anticipatePin: 1,
+          refreshPriority: -1,
+          onUpdate: (self) => {
+            if (cursorRef.current) {
+              const progress = self.progress;
+              const showCursor = progress > 0.1 && progress < 0.4;
+              gsap.set(cursorRef.current, {
+                display: showCursor ? 'block' : 'none',
+                opacity: showCursor ? 1 : 0
+              });
+            }
+          }
         },
-        "step3"
-      )
-      .to(
-        ".img7",
-        {
-          right: "-20vw",
-          top: "-15vh",
-          opacity: 1,
-          duration: 1.8,
-          delay: 1.5,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step3"
-      )
-      .to(
-        ".img8",
-        {
-          left: "-10vw",
-          top: "-2vh",
-          opacity: 1,
-          delay: 1.5,
-          duration: 1.8,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step3"
-      )
-      .to(
-        ".content-text.heading",
-        { y: -60, opacity: 0, delay: 1.5, duration: 1.2, ease: "power2.inOut", willChange: "opacity, transform" },
-        "step3"
-      )
-      .to(
-        ".content-text.para",
-        { y: 60, opacity: 0, delay: 1.5, duration: 1.2, ease: "power2.inOut", willChange: "opacity, transform" },
-        "step3"
-      )
-      .to(
-        ".input-field",
-        {
-          scale: 1.2,
-          x: () =>
-            window.innerWidth / 2 -
-            document.querySelector(".input-field").getBoundingClientRect()
-              .left -
-            document.querySelector(".input-field").offsetWidth / 2,
-          y: () =>
-            window.innerHeight / 4 -
-            document.querySelector(".input-field").getBoundingClientRect().top -
-            document.querySelector(".input-field").offsetHeight / 2,
-          delay: 1.5,
-          duration: 1.2,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step3"
-      )
-      .to(
-        ".ig-name",
-        {
-          opacity: 1,
-          delay: 1.5,
-          duration: 1.2,
-          ease: "power2.inOut",
-          willChange: "opacity",
-        },
-        "step3"
-      )
-      .to(
-        heading.words,
-        {
-          y: 0,
-          opacity: 1,
-          delay: 2.5, // increased from 2
-          duration: 1.5, // increased from 1
-          stagger: 0.22, // increased from 0.15
-          ease: "power3.inOut",
-          willChange: "opacity, transform",
-        },
-        "step3"
-      )
-      .to(
-        ".glass",
-        {
-          opacity: 1,
-          delay: 2, // increased from 1.5
-          willChange: "opacity",
-        },
-        "step3"
-      )
-      .to(
-        ".glass",
-        {
-          top: 140,
-          delay: 2.3, // increased from 1.8
-          duration: 2.8, // increased from 2
-          ease: "power3.inOut",
-          willChange: "transform",
-        },
-        "step3"
-      )
-      .to(
-        ".popup",
-        {
-          y: 0,
-          opacity: 1,
-          delay: 2.5, // increased from 2
-          duration: 1.5, // increased from 1
-          stagger: 0.22, // increased from 0.15
-          ease: "power3.inOut",
-          willChange: "opacity, transform",
-        },
-        "step3"
-      )
-      .to(
-        ".anim3-desc .desc",
-        {
-          y: 0,
-          opacity: 1,
-          delay: 2.5, // increased from 2
-          duration: 1.5, // increased from 1
-          stagger: 0.22, // increased from 0.15
-          ease: "power3.inOut",
-          willChange: "opacity, transform",
-        },
-        "step3"
-      )
-      .to(
-        ".gradient",
-        {
-          opacity: 1,
-          delay: 2, // increased from 1.5
-          duration: 1.5, // increased from 1
-          ease: "power2.inOut",
-          willChange: "opacity",
-        },
-        "step3"
-      )
-      .to(
+      });
+
+      const chars = { value: 0 };
+      tl.to(
         chars,
         {
-          value: text.length, // keep the text filled instead of resetting
-          duration: 0,
+          value: text.length,
+          duration: 3.5,
           delay: 1.5,
+          ease: "none",
+          onStart: () => {
+            handlePlayAnimation();
+          },
           onUpdate: () => {
             if (inputRef.current) {
-              // Keep the full text visible
-              inputRef.current.placeholder = text;
-              updateCursorPosition(text);
-            }
-          },
-          onComplete: () => {
-            // Hide cursor after text is complete
-            if (cursorRef.current) {
-              gsap.set(cursorRef.current, { opacity: 0 });
+              const currentText = text.slice(0, Math.floor(chars.value));
+              inputRef.current.placeholder = currentText;
+              updateCursorPosition(currentText);
             }
           },
           willChange: "opacity",
         },
-        "step3"
+        "step2"
       );
 
-    tl.to(
-      ".anim3-heading",
-      {
-        y: "-25vh",
-        opacity: 0,
-        filter: "blur(6px)",
-        duration: 1.5, // increased from 1
-        ease: "power2.inOut",
-        willChange: "opacity, transform, filter",
-      },
-      "step4"
-    )
-      .to(
-        ".anim3-desc",
-        {
-          y: "-50vh",
-          filter: "blur(6px)",
-          opacity: 0,
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "opacity, transform, filter",
-        },
-        "step4"
-      )
-      .to(
-        ".anim3-gradient",
-        {
-          y: "-5vh",
-          opacity: 0,
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step4"
-      )
-      .to(
-        ".input-field",
-        {
-          filter: "blur(6px)",
-          opacity: 0,
-          duration: 0.7, // increased from 0.4
-          ease: "power2.inOut",
-          willChange: "opacity, filter",
-        },
-        "step4"
-      )
-      .to(
-        [".popup.one", ".popup.two", ".popup.three"],
-        {
-          filter: "blur(6px)",
-          opacity: 0,
-          duration: 0.6, // increased from 0.3
-          stagger: 0.18, // increased from 0.1
-          ease: "power2.inOut",
-          willChange: "opacity, filter",
-        },
-        "step4"
-      )
-      .to(
-        ".popup.four",
-        {
-          y: "10vh",
-          x: "-21.5vw",
-          duration: 1.5, // increased from 1
-          willChange: "transform",
-        },
-        "step4"
-      )
-      .to(
-        ".img6",
-        {
-          x: () => gsap.getProperty(".img6", "x") - window.innerWidth * 0.1,
-          y: () => gsap.getProperty(".img6", "y") - window.innerHeight * 0.05,
-          duration: 1.5, // increased from 1
-          ease: "power2.inOut",
-          willChange: "transform",
-        },
-        "step4"
-      )
-      .to(
-        ".img6 .img-gradient",
-        {
-          scale: 1.8,
-          duration: 1.5, // increased from 1
-          ease: "power2.inOut",
-          willChange: "transform",
-        },
-        "step4"
-      )
-      .to(
-        heading2.words,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.5, // increased from 1
-          delay: 0.8,    // increased from 0.5
-          stagger: 0.22, // increased from 0.15
-          ease: "power3.inOut",
-          willChange: "opacity, transform",
-        },
-        "step4"
-      )
-      .to(
-        ".anim4-desc .desc",
-        {
-          y: 0,
-          opacity: 1,
-          delay: 0.8,    // increased from 0.5
-          duration: 1.5, // increased from 1
-          stagger: 0.22, // increased from 0.15
-          ease: "power3.inOut",
-          willChange: "opacity, transform",
-        },
-        "step4"
-      )
-      .to(
-        ".img8",
-        {
-          left: "-2vw",
-          top: "10vh",
-          filter: "blur(4px)",
-          opacity: 1,
-          duration: 1.5, // increased from 1
-          ease: "power3.inOut",
-          willChange: "opacity, transform, filter",
-        },
-        "step4"
-      )
-      .to(
-        ".img3",
-        {
-          left: "20vw",
-          bottom: "-30vh",
-          scale: 0.5,
-          filter: "blur(4px)",
-          opacity: 1,
-          duration: 1.5, // increased from 1
-          ease: "power3.inOut",
-          willChange: "opacity, transform, filter",
-        },
-        "step4"
-      )
-      .to(
-        ".img4",
-        {
-          right: "15vw",
-          bottom: "-2vh",
-          filter: "blur(4px)",
-          opacity: 1,
-          duration: 1.5, // increased from 1
-          ease: "power3.inOut",
-          willChange: "opacity, transform, filter",
-        },
-        "step4"
-      )
-      .to(
-        ".img5",
-        {
-          right: "-3vw",
-          top: "-2vh",
-          filter: "blur(4px)",
-          opacity: 1,
-          duration: 1.5, // increased from 1
-          ease: "power3.inOut",
-          willChange: "opacity, transform, filter",
-        },
-        "step4"
-      )
-      .to(
-        ".img7",
-        {
-          right: "-20vw",
-          top: "-6vh",
-          filter: "blur(4px)",
-          opacity: 1,
-          duration: 1.1, // increased from 0.7
-          ease: "power3.inOut",
-          willChange: "opacity, transform, filter",
-        },
-        "step4"
-      )
-      .from(
-        ".chat-logo",
-        {
-          scale: 0,
-          opacity: 0,
-          duration: 1.1, // increased from 0.7
-          ease: "back.out(1.7)",
-          willChange: "opacity, transform",
-        },
-        "step4"
-      )
-      .from(
-        ".chat-bubble",
-        {
-          x: -100,
-          y: -20,
-          scale: 0.2,
-          opacity: 0,
-          duration: 1.5, // increased from 1
-          ease: "power3.inOut",
-          willChange: "opacity, transform",
-        },
-        "step4+=0.3" // increased from 0.2
-      );
-
-    // Step 5: Exit Animation - All elements move out from screen
-    tl.to(
-        ".img6",
-        {
-          y: "-100vh",
-          opacity: 0,
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step5"
-      )
-      .to(
-        ".anim4-heading",
-        {
-          y: "-100vh",
-          opacity: 0,
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step5+=0.2"
-      )
-      .to(
-        ".anim4-desc",
-        {
-          y: "-100vh",
-          opacity: 0,
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step5+=0.4"
-      )
-      .to(
-        [".chat-logo", ".chat-bubble"],
-        {
-          y: "-100vh",
-          opacity: 0,
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step5+=0.6"
-      )
-      .to(
-        ".popup.four",
-        {
-          y: "-100vh",
-          opacity: 0,
-          duration: 1.5,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step5+=0.8"
-      )
-      // Images exit in opposite directions from their entry
-      .to(
+      tl.to(
         ".img1",
         {
-          left: "-25vw",
-          top: "-15vh",
-          opacity: 0,
-          duration: 1.8,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step5"
-      )
-      .to(
-        ".img2",
-        {
-          left: "-15vw",
-          bottom: "-15vh",
-          opacity: 0,
-          duration: 1.8,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step5"
-      )
-      .to(
-        ".img3",
-        {
-          bottom: "-60vh",
           left: "-20vw",
-          opacity: 0,
+          top: "-5vh",
+          opacity: 1,
+          delay: 1.5,
           duration: 1.8,
           ease: "power2.inOut",
           willChange: "opacity, transform",
         },
-        "step5"
+        "step3"
       )
-      .to(
-        ".img4",
-        {
-          right: "-15vw",
-          bottom: "-25vh",
-          opacity: 0,
-          duration: 1.8,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step5"
-      )
-      .to(
-        ".img5",
-        {
-          right: "-20vw",
-          bottom: "-20vh",
-          opacity: 0,
-          duration: 1.8,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step5"
-      )
-      .to(
-        ".img7",
-        {
-          right: "-30vw",
-          top: "-20vh",
-          opacity: 0,
-          duration: 1.8,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step5"
-      )
-      .to(
-        ".img8",
-        {
-          left: "-15vw",
-          top: "-12vh",
-          opacity: 0,
-          duration: 1.8,
-          ease: "power2.inOut",
-          willChange: "opacity, transform",
-        },
-        "step5"
-      );
+        .to(
+          ".img2",
+          {
+            left: "-5vw",
+            bottom: "-5vh",
+            opacity: 1,
+            delay: 1.5,
+            duration: 1.8,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step3"
+        )
+        .to(
+          ".img3",
+          {
+            bottom: "-50vh",
+            left: "-10vw",
+            opacity: 1,
+            delay: 1.5,
+            duration: 1.8,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step3"
+        )
+        .to(
+          ".img4",
+          {
+            right: "-8vw",
+            bottom: "-15vh",
+            opacity: 1,
+            delay: 1.5,
+            duration: 1.8,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step3"
+        )
+        .to(
+          ".img5",
+          {
+            right: "-15vw",
+            bottom: "-10vh",
+            opacity: 1,
+            delay: 1.5,
+            duration: 1.8,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step3"
+        )
+        .to(
+          ".img6",
+          {
+            x: () =>
+              window.innerWidth / 2 -
+              document.querySelector(".img6").getBoundingClientRect().left -
+              document.querySelector(".img6").offsetWidth / 2,
+            y: () =>
+              window.innerHeight / 2 -
+              document.querySelector(".img6").getBoundingClientRect().top -
+              document.querySelector(".img6").offsetHeight / 2 +
+              40,
+            scale: 2.8,
+            opacity: 1,
+            delay: 1.5,
+            duration: 2,
+            ease: "power2.inOut",
+            onStart: () => {
+              step3Reached.current = true;
+            },
+            borderBottom: 1,
+            borderBottomColor: "#ffffff",
+            willChange: "opacity, transform",
+          },
+          "step3"
+        )
+        .to(
+          ".img7",
+          {
+            right: "-20vw",
+            top: "-15vh",
+            opacity: 1,
+            duration: 1.8,
+            delay: 1.5,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step3"
+        )
+        .to(
+          ".img8",
+          {
+            left: "-10vw",
+            top: "-2vh",
+            opacity: 1,
+            delay: 1.5,
+            duration: 1.8,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step3"
+        )
+        .to(
+          ".content-text.heading",
+          { y: -60, opacity: 0, delay: 1.5, duration: 1.2, ease: "power2.inOut", willChange: "opacity, transform" },
+          "step3"
+        )
+        .to(
+          ".content-text.para",
+          { y: 60, opacity: 0, delay: 1.5, duration: 1.2, ease: "power2.inOut", willChange: "opacity, transform" },
+          "step3"
+        )
+        .to(
+          ".input-field",
+          {
+            scale: 1.2,
+            x: () =>
+              window.innerWidth / 2 -
+              document.querySelector(".input-field").getBoundingClientRect()
+                .left -
+              document.querySelector(".input-field").offsetWidth / 2,
+            y: () =>
+              window.innerHeight / 4 -
+              document.querySelector(".input-field").getBoundingClientRect().top -
+              document.querySelector(".input-field").offsetHeight / 2,
+            delay: 1.5,
+            duration: 1.2,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step3"
+        )
+        .to(
+          ".ig-name",
+          {
+            opacity: 1,
+            delay: 1.5,
+            duration: 1.2,
+            ease: "power2.inOut",
+            willChange: "opacity",
+          },
+          "step3"
+        )
+        .to(
+          heading.words,
+          {
+            y: 0,
+            opacity: 1,
+            delay: 2.5,
+            duration: 1.5,
+            stagger: 0.22,
+            ease: "power3.inOut",
+            willChange: "opacity, transform",
+          },
+          "step3"
+        )
+        .to(
+          ".glass",
+          {
+            opacity: 1,
+            delay: 2,
+            willChange: "opacity",
+          },
+          "step3"
+        )
+        .to(
+          ".glass",
+          {
+            top: 140,
+            delay: 2.3,
+            duration: 2.8,
+            ease: "power3.inOut",
+            willChange: "transform",
+          },
+          "step3"
+        )
+        .to(
+          ".popup",
+          {
+            y: 0,
+            opacity: 1,
+            delay: 2.5,
+            duration: 1.5,
+            stagger: 0.22,
+            ease: "power3.inOut",
+            willChange: "opacity, transform",
+          },
+          "step3"
+        )
+        .to(
+          ".anim3-desc .desc",
+          {
+            y: 0,
+            opacity: 1,
+            delay: 2.5,
+            duration: 1.5,
+            stagger: 0.22,
+            ease: "power3.inOut",
+            willChange: "opacity, transform",
+          },
+          "step3"
+        )
+        .to(
+          ".gradient",
+          {
+            opacity: 1,
+            delay: 2,
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "opacity",
+          },
+          "step3"
+        )
+        .to(
+          chars,
+          {
+            value: text.length,
+            duration: 0,
+            delay: 1.5,
+            onUpdate: () => {
+              if (inputRef.current) {
+                inputRef.current.placeholder = text;
+                updateCursorPosition(text);
+              }
+            },
+            onComplete: () => {
+              if (cursorRef.current) {
+                gsap.set(cursorRef.current, { opacity: 0 });
+              }
+            },
+            willChange: "opacity",
+          },
+          "step3"
+        );
 
-      
+      tl.to(
+        ".anim3-heading",
+        {
+          y: "-25vh",
+          opacity: 0,
+          filter: "blur(6px)",
+          duration: 1.5,
+          ease: "power2.inOut",
+          willChange: "opacity, transform, filter",
+        },
+        "step4"
+      )
+        .to(
+          ".anim3-desc",
+          {
+            y: "-50vh",
+            filter: "blur(6px)",
+            opacity: 0,
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "opacity, transform, filter",
+          },
+          "step4"
+        )
+        .to(
+          ".anim3-gradient",
+          {
+            y: "-5vh",
+            opacity: 0,
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step4"
+        )
+        .to(
+          ".input-field",
+          {
+            filter: "blur(6px)",
+            opacity: 0,
+            duration: 0.7,
+            ease: "power2.inOut",
+            willChange: "opacity, filter",
+          },
+          "step4"
+        )
+        .to(
+          [".popup.one", ".popup.two", ".popup.three"],
+          {
+            filter: "blur(6px)",
+            opacity: 0,
+            duration: 0.6,
+            stagger: 0.18,
+            ease: "power2.inOut",
+            willChange: "opacity, filter",
+          },
+          "step4"
+        )
+        .to(
+          ".popup.four",
+          {
+            y: "10vh",
+            x: "-21.5vw",
+            duration: 1.5,
+            willChange: "transform",
+          },
+          "step4"
+        )
+        .to(
+          ".img6",
+          {
+            x: () => gsap.getProperty(".img6", "x") - window.innerWidth * 0.1,
+            y: () => gsap.getProperty(".img6", "y") - window.innerHeight * 0.05,
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "transform",
+          },
+          "step4"
+        )
+        .to(
+          ".img6 .img-gradient",
+          {
+            scale: 1.8,
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "transform",
+          },
+          "step4"
+        )
+        .to(
+          heading2.words,
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1.5,
+            delay: 0.8,
+            stagger: 0.22,
+            ease: "power3.inOut",
+            willChange: "opacity, transform",
+          },
+          "step4"
+        )
+        .to(
+          ".anim4-desc .desc",
+          {
+            y: 0,
+            opacity: 1,
+            delay: 0.8,
+            duration: 1.5,
+            stagger: 0.22,
+            ease: "power3.inOut",
+            willChange: "opacity, transform",
+          },
+          "step4"
+        )
+        .to(
+          ".img8",
+          {
+            left: "-2vw",
+            top: "10vh",
+            filter: "blur(4px)",
+            opacity: 1,
+            duration: 1.5,
+            ease: "power3.inOut",
+            willChange: "opacity, transform, filter",
+          },
+          "step4"
+        )
+        .to(
+          ".img3",
+          {
+            left: "20vw",
+            bottom: "-30vh",
+            scale: 0.5,
+            filter: "blur(4px)",
+            opacity: 1,
+            duration: 1.5,
+            ease: "power3.inOut",
+            willChange: "opacity, transform, filter",
+          },
+          "step4"
+        )
+        .to(
+          ".img4",
+          {
+            right: "15vw",
+            bottom: "-2vh",
+            filter: "blur(4px)",
+            opacity: 1,
+            duration: 1.5,
+            ease: "power3.inOut",
+            willChange: "opacity, transform, filter",
+          },
+          "step4"
+        )
+        .to(
+          ".img5",
+          {
+            right: "-3vw",
+            top: "-2vh",
+            filter: "blur(4px)",
+            opacity: 1,
+            duration: 1.5,
+            ease: "power3.inOut",
+            willChange: "opacity, transform, filter",
+          },
+          "step4"
+        )
+        .to(
+          ".img7",
+          {
+            right: "-20vw",
+            top: "-6vh",
+            filter: "blur(4px)",
+            opacity: 1,
+            duration: 1.1,
+            ease: "power3.inOut",
+            willChange: "opacity, transform, filter",
+          },
+          "step4"
+        )
+        .from(
+          ".chat-logo",
+          {
+            scale: 0,
+            opacity: 0,
+            duration: 1.1,
+            ease: "back.out(1.7)",
+            willChange: "opacity, transform",
+          },
+          "step4"
+        )
+        .from(
+          ".chat-bubble",
+          {
+            x: -100,
+            y: -20,
+            scale: 0.2,
+            opacity: 0,
+            duration: 1.5,
+            ease: "power3.inOut",
+            willChange: "opacity, transform",
+          },
+          "step4+=0.3"
+        );
+
+      tl.to(
+          ".img6",
+          {
+            y: "-100vh",
+            opacity: 0,
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step5"
+        )
+        .to(
+          ".anim4-heading",
+          {
+            y: "-100vh",
+            opacity: 0,
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step5+=0.2"
+        )
+        .to(
+          ".anim4-desc",
+          {
+            y: "-100vh",
+            opacity: 0,
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step5+=0.4"
+        )
+        .to(
+          [".chat-logo", ".chat-bubble"],
+          {
+            y: "-100vh",
+            opacity: 0,
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step5+=0.6"
+        )
+        .to(
+          ".popup.four",
+          {
+            y: "-100vh",
+            opacity: 0,
+            duration: 1.5,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step5+=0.8"
+        )
+        .to(
+          ".img1",
+          {
+            left: "-25vw",
+            top: "-15vh",
+            opacity: 0,
+            duration: 1.8,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step5"
+        )
+        .to(
+          ".img2",
+          {
+            left: "-15vw",
+            bottom: "-15vh",
+            opacity: 0,
+            duration: 1.8,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step5"
+        )
+        .to(
+          ".img3",
+          {
+            bottom: "-60vh",
+            left: "-20vw",
+            opacity: 0,
+            duration: 1.8,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step5"
+        )
+        .to(
+          ".img4",
+          {
+            right: "-15vw",
+            bottom: "-25vh",
+            opacity: 0,
+            duration: 1.8,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step5"
+        )
+        .to(
+          ".img5",
+          {
+            right: "-20vw",
+            bottom: "-20vh",
+            opacity: 0,
+            duration: 1.8,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step5"
+        )
+        .to(
+          ".img7",
+          {
+            right: "-30vw",
+            top: "-20vh",
+            opacity: 0,
+            duration: 1.8,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step5"
+        )
+        .to(
+          ".img8",
+          {
+            left: "-15vw",
+            top: "-12vh",
+            opacity: 0,
+            duration: 1.8,
+            ease: "power2.inOut",
+            willChange: "opacity, transform",
+          },
+          "step5"
+        );
+    }, scopeRef);
+
+    return () => ctx.revert();
   }, []);
 
   useEffect(() => {
-    if (!cursorRef.current) return;
+    if (!scopeRef.current) return;
+    const ctx = gsap.context(() => {
+      if (!cursorRef.current) return;
+      const cursorTl = gsap.timeline({ repeat: -1 });
+      cursorTl.to(cursorRef.current, {
+        opacity: 0,
+        duration: 0.6,
+        ease: "power1.inOut",
+        willChange: "opacity",
+      })
+      .to(cursorRef.current, {
+        opacity: 1,
+        duration: 0.6,
+        ease: "power1.inOut",
+        willChange: "opacity",
+      });
 
-    // Create a more stable cursor animation
-    const cursorTl = gsap.timeline({ repeat: -1 });
-    cursorTl.to(cursorRef.current, {
-      opacity: 0,
-      duration: 0.6,
-      ease: "power1.inOut",
-      willChange: "opacity",
-    })
-    .to(cursorRef.current, {
-      opacity: 1,
-      duration: 0.6,
-      ease: "power1.inOut",
-      willChange: "opacity",
-    });
+      return () => {
+        cursorTl.kill();
+      };
+    }, scopeRef);
 
-    return () => {
-      cursorTl.kill();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
-    <div className="w-full h-[400vh] bg-transparent">
+    <div className="w-full h-[400vh] bg-transparent" ref={scopeRef}>
       <div
         className="bg-beige-800 w-full h-screen sticky top-0 overflow-hidden flex-center text-dark-black"
         ref={aboutCont}
@@ -976,7 +980,6 @@ export default function AboutComponent() {
             and effort.
           </p>
         </div>
-        {/* Floating Images */}
         <div className="w-full h-full absolute z-20 top-0 left-0">
           <div className="w-[12vw] h-[18vw] absolute top-[11vh] left-[-6vw] rounded-[56px] overflow-hidden img1">
             <Image
