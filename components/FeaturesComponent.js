@@ -45,7 +45,6 @@ const FeaturesComponent = () => {
                 y: 0,
                 opacity: 1,
                 duration: 0.8,
-                delay: index * 0.001,
                 ease: "power2.inOut",
                 scrollTrigger: {
                     trigger: h1,

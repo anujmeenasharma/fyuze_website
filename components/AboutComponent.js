@@ -290,8 +290,8 @@ export default function AboutComponent() {
         chars,
         {
           value: text.length,
-          duration: 3.5,
-          delay: 1.5,
+          duration: 1.2,
+          delay: 0.8,
           ease: "none",
           onStart: () => {
             handlePlayAnimation();
@@ -473,7 +473,7 @@ export default function AboutComponent() {
             opacity: 1,
             delay: 2.5,
             duration: 1.5,
-            stagger: 0.22,
+            stagger: 0.15,
             ease: "power3.inOut",
             willChange: "opacity, transform",
           },
@@ -564,7 +564,7 @@ export default function AboutComponent() {
           y: "-25vh",
           opacity: 0,
           filter: "blur(6px)",
-          duration: 1.5,
+          duration: 1,
           ease: "power2.inOut",
           willChange: "opacity, transform, filter",
         },
@@ -652,9 +652,9 @@ export default function AboutComponent() {
           {
             y: 0,
             opacity: 1,
-            duration: 1.5,
+            duration: 1,
             delay: 0.8,
-            stagger: 0.22,
+            stagger: 0.15,
             ease: "power3.inOut",
             willChange: "opacity, transform",
           },
@@ -767,7 +767,7 @@ export default function AboutComponent() {
       tl.to(
           ".img6",
           {
-            y: "-100vh",
+            y: "-70vh",
             opacity: 0,
             duration: 1.5,
             ease: "power2.inOut",
@@ -778,9 +778,9 @@ export default function AboutComponent() {
         .to(
           ".anim4-heading",
           {
-            y: "-100vh",
+            y: "-70vh",
             opacity: 0,
-            duration: 1.5,
+            duration: 1,
             ease: "power2.inOut",
             willChange: "opacity, transform",
           },
@@ -789,7 +789,7 @@ export default function AboutComponent() {
         .to(
           ".anim4-desc",
           {
-            y: "-100vh",
+            y: "-70vh",
             opacity: 0,
             duration: 1.5,
             ease: "power2.inOut",
@@ -800,7 +800,7 @@ export default function AboutComponent() {
         .to(
           [".chat-logo", ".chat-bubble"],
           {
-            y: "-100vh",
+            y: "-70vh",
             opacity: 0,
             duration: 1.5,
             ease: "power2.inOut",
@@ -811,7 +811,7 @@ export default function AboutComponent() {
         .to(
           ".popup.four",
           {
-            y: "-100vh",
+            y: "-70vh",
             opacity: 0,
             duration: 1.5,
             ease: "power2.inOut",
